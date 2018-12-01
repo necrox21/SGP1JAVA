@@ -87,16 +87,9 @@ public class ST extends Thread{
         }
     }
     
-        
-    @Override
-    public void run()
+    private void Exchange()
     {
-            Read(tmp,PFI);
-            System.out.println(type+" Demarre : "+tmp);
-           /* Write(tmp.get(0),Ecriture);
-            int a = Read(Lecture);
-            tmp.add(a);*/
-            int pos;
+        int pos;
             int e;
             int l;
             while(true)
@@ -115,18 +108,24 @@ public class ST extends Thread{
                 Write(e,Ecriture);
                 l = Read(Lecture);
             
-                if( ((type=='S'||type=='s')&&e>=l)||((type=='T'||type=='t'))&&e<=l)
+                if( ((type=='S'||type=='s')&&e>l)||((type=='T'||type=='t'))&&e<l)
                 {
                     tmp.remove(pos);
                     tmp.add(l);
                 }
                 else
                     break;
+                //System.out.println(type+" envoi : "+e+" lit : l");
             }
-
+    }
+    
+    @Override
+    public void run()
+    {
+            Read(tmp,PFI);
+            System.out.println(type+" Demarre : "+tmp);
+            Exchange();
             Write(tmp,PPO);
             System.out.println(type+" Sors : "+tmp);
-            
-
     }    
 }
