@@ -24,18 +24,37 @@ public class ST extends Thread{
     PipedOutputStream PPO;
     PipedInputStream Lecture;
     PipedOutputStream Ecriture;
+    PipedInputStream LectureS;
+    PipedOutputStream EcritureS;
+    PipedInputStream LectureT;
+    PipedOutputStream EcritureT;
     private List<Integer> tmp = new ArrayList<Integer>();
+    private List<Integer> S = new ArrayList<Integer>();
+    private List<Integer> T = new ArrayList<Integer>();
     private char type;
+    private String recu;
     
-    ST(char type)
+    ST(char type,String recu)
     {
         PFI = new PipedInputStream();
         PPO = new PipedOutputStream();
         Lecture = new PipedInputStream();
         Ecriture = new PipedOutputStream();
+        LectureS = new PipedInputStream();
+        EcritureS = new PipedOutputStream();
+        LectureT = new PipedInputStream();        
+        EcritureT = new PipedOutputStream();
         this.type = type;
+        this.recu = recu;
     }
     
+    public static void Separator(List<Integer> tab,List<Integer> tabS,List<Integer> tabT)
+    {
+        int size = tab.size()/2+tab.size()%2;
+        tabS.addAll(tab.subList(0,size));
+        tabT.addAll(tab.subList(size,tab.size()));
+    }
+        
     public static void Read(List<Integer> t,PipedInputStream p)
     {
         t.clear();
@@ -123,9 +142,36 @@ public class ST extends Thread{
     public void run()
     {
             Read(tmp,PFI);
-            System.out.println(type+" Demarre : "+tmp);
+            System.out.println(recu+" Demarre : "+tmp);
             Exchange();
+            ST PS = new ST('S',recu+"S");
+            ST PT = new ST('T',recu+"T");
+            if(tmp.size()>1)
+            try {
+                EcritureS.connect(PS.PFI);
+                LectureS.connect(PS.PPO);
+                EcritureT.connect(PT.PFI);
+                LectureT.connect(PT.PPO);
+                PS.Ecriture.connect(PT.Lecture);
+                PT.Ecriture.connect(PS.Lecture);
+                Separator(tmp,S,T);
+                Write(S,EcritureS);
+                Write(T,EcritureT);
+               PS.start();
+               PT.start();
+               PS.join();
+               PT.join();
+               Read(S,LectureS);
+               Read(T,LectureT);
+               tmp.clear();
+               tmp.addAll(S);
+               tmp.addAll(T);
+        } catch (IOException ex) {
+            Logger.getLogger(ST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ST.class.getName()).log(Level.SEVERE, null, ex);
+        }
             Write(tmp,PPO);
-            System.out.println(type+" Sors : "+tmp);
+            System.out.println(recu+" Sors : "+tmp);
     }    
 }
