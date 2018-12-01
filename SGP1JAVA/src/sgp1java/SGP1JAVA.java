@@ -66,27 +66,6 @@ public class SGP1JAVA {
             System.out.println(S.toString());
             System.out.println(T.toString());   */
             serffsdqsdffsd
-            ST o = new ST();
-            PipedInputStream res=new PipedInputStream();
-            PipedOutputStream val=new PipedOutputStream();
-            //o.initPipe(val);
-            res.connect(o.IP);
-            val.connect(o.IF);
-            val.write(10);
-            o.start();
-            try {
-                o.join();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            int r =0;
-            while((r=res.read())!=-1)
-            {
-                System.out.println(r);
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+
     
 }
