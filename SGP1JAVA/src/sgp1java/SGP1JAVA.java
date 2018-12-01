@@ -61,36 +61,28 @@ public class SGP1JAVA {
         System.out.println();
         System.out.println(S.toString());
         System.out.println(T.toString());   */
-        ST PS = new ST('S');
-        ST PT = new ST('T');
-        PipedInputStream resS=new PipedInputStream();
-        PipedOutputStream valS=new PipedOutputStream();
-        PipedInputStream resT=new PipedInputStream();
-        PipedOutputStream valT=new PipedOutputStream();
-        /* resS.connect(PS.PPO);
-        valS.connect(PS.PFI);
         
-        resT.connect(PT.PPO);
-        valT.connect(PT.PFI);*/
-        PS.initPipe(resS,valS);
-        //PT.initPipe(PS.lecture,PS.ecriture,resT,valT);
-        //PS.PFI.connect(valS);
-        ST.Write(S,valS,PS.PFI);
-        // ST.Write(T,valT,PT.lecture);
-        PS.start();
-        //PT.start();
+        ST PS = new ST('S');
+        PipedInputStream res=new PipedInputStream();
+        PipedOutputStream val=new PipedOutputStream();
+                List<Integer> tmp= new ArrayList();
         try {
-            
-            PS.join();
-            PT.join();
-        } catch (InterruptedException ex) {
+                        val.connect(PS.PFI);
+            res.connect(PS.PPO);
+
+            ST.Write(S,val);
+            ST.Write(T,val);
+            PS.start();
+            ST.Read(tmp, res);
+            System.out.println(tmp);
+            tmp.clear();
+            ST.Read(tmp, res);
+            System.out.println(tmp);
+        } catch (IOException ex) {
             Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
         }
-        int r;
-        List<Integer> tmp = new ArrayList<Integer>();
-         ST.Read(tmp,resS,PS.ecriture);
-        /*  tmp.clear();
-        ST.Read(tmp,resT,PT.ecriture);*/
+      
+        
     }
     
 }
