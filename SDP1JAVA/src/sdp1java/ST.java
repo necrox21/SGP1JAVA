@@ -16,7 +16,9 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author BrianT
+ * @author BrianTrinquart
+ * @author MorganeTreuillet
+ * 
  */
 public class ST extends Thread{
     
