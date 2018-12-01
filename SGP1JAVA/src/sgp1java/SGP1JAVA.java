@@ -40,8 +40,8 @@ public class SGP1JAVA {
             List<Integer> T= new ArrayList();
             Separator(tab,S,T);
             System.out.println(tab.toString());
-            System.out.println("S : "+S.toString());
-            System.out.println("T : "+T.toString());
+            /*System.out.println("S : "+S.toString());
+            System.out.println("T : "+T.toString());*/
 
             /*while(true)
             {
