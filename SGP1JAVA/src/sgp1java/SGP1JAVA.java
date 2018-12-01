@@ -25,9 +25,9 @@ public class SGP1JAVA {
      * @param args the command line arguments
      */
     
-    static final int TailleT = 10;
-    static final int MIN = 0;
-    static final int MAX = 100;
+    static final int TailleT = 10; // Taille de la Liste principale
+    static final int MIN = 0;//Valeur Min contenu dans la liste
+    static final int MAX = 100;//Valeur Max contenu dans la liste
 
 
     
