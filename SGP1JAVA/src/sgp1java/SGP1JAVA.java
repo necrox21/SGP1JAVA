@@ -54,7 +54,7 @@ public class SGP1JAVA {
             if(envoieS>envoieT)
             {
             S.remove(maxS);
-            S.add(envoieT);
+            S.add(envoieT);sfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf
             
             T.remove(minT);
             T.add(envoieS);
