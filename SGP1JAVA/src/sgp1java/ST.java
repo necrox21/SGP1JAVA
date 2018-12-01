@@ -22,19 +22,23 @@ public class ST extends Thread{
     
     PipedInputStream PFI;
     PipedOutputStream PPO;
+    PipedInputStream Lecture;
+    PipedOutputStream Ecriture;
     private List<Integer> tmp = new ArrayList<Integer>();
-        private List<Integer> tmp2 = new ArrayList<Integer>();
     private char type;
     
     ST(char type)
     {
         PFI = new PipedInputStream();
         PPO = new PipedOutputStream();
+        Lecture = new PipedInputStream();
+        Ecriture = new PipedOutputStream();
         this.type = type;
     }
     
     public static void Read(List<Integer> t,PipedInputStream p)
     {
+        t.clear();
         try {
             int size=p.read();
 
@@ -63,15 +67,66 @@ public class ST extends Thread{
         }
     }
     
+    public static int Read(PipedInputStream p)
+    {
+        try {
+            int r = -1;          
+            return r=p.read();    
+        } catch (IOException ex) {
+            Logger.getLogger(ST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+    
+    public static void Write(int t,PipedOutputStream p)
+    {
+        try {
+                p.write(t);  
+        } catch (IOException ex) {
+                Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
         
     @Override
     public void run()
     {
             Read(tmp,PFI);
-            Read(tmp2,PFI);
+            System.out.println(type+" Demarre : "+tmp);
+           /* Write(tmp.get(0),Ecriture);
+            int a = Read(Lecture);
+            tmp.add(a);*/
+            int pos;
+            int e;
+            int l;
+            while(true)
+            {
+                if(type=='S'||type=='s')
+                {
+                    pos = tmp.indexOf(Collections.max(tmp));
+                }
+                else if(type=='T'||type=='t')
+                {
+                    pos = tmp.indexOf(Collections.min(tmp));
+                }
+                else
+                    break;
+                e = tmp.get(pos);
+                Write(e,Ecriture);
+                l = Read(Lecture);
+            
+                if( ((type=='S'||type=='s')&&e>=l)||((type=='T'||type=='t'))&&e<=l)
+                {
+                    tmp.remove(pos);
+                    tmp.add(l);
+                }
+                else
+                    break;
+            }
+
             Write(tmp,PPO);
-            Write(tmp2,PPO);
-            System.out.println(type+" "+tmp);
-            System.out.println(type+" "+tmp2);
+            System.out.println(type+" Sors : "+tmp);
+            
+
     }    
 }

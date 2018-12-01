@@ -63,21 +63,27 @@ public class SGP1JAVA {
         System.out.println(T.toString());   */
         
         ST PS = new ST('S');
+        ST PT = new ST('T');
         PipedInputStream res=new PipedInputStream();
         PipedOutputStream val=new PipedOutputStream();
                 List<Integer> tmp= new ArrayList();
+        PipedInputStream res2=new PipedInputStream();
+        PipedOutputStream val2=new PipedOutputStream();
         try {
-                        val.connect(PS.PFI);
+            val.connect(PS.PFI);
             res.connect(PS.PPO);
-
+            val2.connect(PT.PFI);
+            res2.connect(PT.PPO);
+            PS.Ecriture.connect(PT.Lecture);
+            PT.Ecriture.connect(PS.Lecture);
             ST.Write(S,val);
-            ST.Write(T,val);
+            ST.Write(T,val2);
             PS.start();
+            PT.start();
+            
             ST.Read(tmp, res);
-            System.out.println(tmp);
-            tmp.clear();
-            ST.Read(tmp, res);
-            System.out.println(tmp);
+            ST.Read(tmp, res2);
+            
         } catch (IOException ex) {
             Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
         }
