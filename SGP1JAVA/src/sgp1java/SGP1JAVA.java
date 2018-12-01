@@ -33,75 +33,64 @@ public class SGP1JAVA {
     }
     public static void main(String[] args){
 
+        List<Integer> tab = new <Integer>ArrayList();
+        tab.addAll(Arrays.asList(3,2,5,1,9,4,7,6,8,0,8));
+        List<Integer> S = new ArrayList();
+        List<Integer> T= new ArrayList();
+        Separator(tab,S,T);
+        System.out.println(tab.toString());
+        /*System.out.println("S : "+S.toString());
+        System.out.println("T : "+T.toString());*/
+        /*while(true)
+        {
+        int maxS=S.indexOf(Collections.max(S));
+        int minT=T.indexOf(Collections.min(T));
+        envoieS = S.get(maxS);
+        envoieT = T.get(minT);
+        if(envoieS>envoieT)
+        {
+        S.remove(maxS);
+        S.add(envoieT);
+        
+        T.remove(minT);
+        T.add(envoieS);
+        }
+        else
+        break;
+        }
+        System.out.println();
+        System.out.println(S.toString());
+        System.out.println(T.toString());   */
+        ST PS = new ST('S');
+        ST PT = new ST('T');
+        PipedInputStream resS=new PipedInputStream();
+        PipedOutputStream valS=new PipedOutputStream();
+        PipedInputStream resT=new PipedInputStream();
+        PipedOutputStream valT=new PipedOutputStream();
+        /* resS.connect(PS.PPO);
+        valS.connect(PS.PFI);
+        
+        resT.connect(PT.PPO);
+        valT.connect(PT.PFI);*/
+        PS.initPipe(resS,valS);
+        //PT.initPipe(PS.lecture,PS.ecriture,resT,valT);
+        //PS.PFI.connect(valS);
+        ST.Write(S,valS,PS.PFI);
+        // ST.Write(T,valT,PT.lecture);
+        PS.start();
+        //PT.start();
         try {
-            List<Integer> tab = new <Integer>ArrayList();
-            tab.addAll(Arrays.asList(3,2,5,1,9,4,7,6,8,0,8));
-            List<Integer> S = new ArrayList();
-            List<Integer> T= new ArrayList();
-            Separator(tab,S,T);
-            System.out.println(tab.toString());
-            /*System.out.println("S : "+S.toString());
-            System.out.println("T : "+T.toString());*/
-
-            /*while(true)
-            {
-            int maxS=S.indexOf(Collections.max(S));
-            int minT=T.indexOf(Collections.min(T));
-            envoieS = S.get(maxS);
-            envoieT = T.get(minT);
-            if(envoieS>envoieT)
-            {
-            S.remove(maxS);
-            S.add(envoieT);
             
-            T.remove(minT);
-            T.add(envoieS);
-            }
-            else
-            break;
-            }
-            System.out.println();
-            System.out.println(S.toString());
-            System.out.println(T.toString());   */
-            
-            ST PS = new ST('S');
-            ST PT = new ST('T');
-            PipedInputStream resS=new PipedInputStream();
-            PipedOutputStream valS=new PipedOutputStream();
-            PipedInputStream resT=new PipedInputStream();
-            PipedOutputStream valT=new PipedOutputStream();
-            
-            resS.connect(PS.PPO);
-            valS.connect(PS.PFI);
-            
-            resT.connect(PT.PPO);
-            valT.connect(PT.PFI);
-            
-            PS.ecriture.connect(PT.lecture);
-            PT.ecriture.connect(PS.lecture);
-
-            
-
-            ST.Write(S,valS);
-            ST.Write(T,valT);
-            PS.start();
-            PT.start();
-            try {
-
-                PS.join();
-                PT.join();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            int r;
-            List<Integer> tmp = new ArrayList<Integer>();
-            ST.Read(tmp,resS);
-            tmp.clear();
-            ST.Read(tmp,resT);
-
-        } catch (IOException ex) {
+            PS.join();
+            PT.join();
+        } catch (InterruptedException ex) {
             Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
         }
+        int r;
+        List<Integer> tmp = new ArrayList<Integer>();
+         ST.Read(tmp,resS,PS.ecriture);
+        /*  tmp.clear();
+        ST.Read(tmp,resT,PT.ecriture);*/
     }
     
 }
