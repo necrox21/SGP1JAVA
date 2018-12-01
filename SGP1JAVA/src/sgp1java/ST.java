@@ -8,6 +8,9 @@ package sgp1java;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,37 +20,58 @@ import java.util.logging.Logger;
  */
 public class ST extends Thread{
     
-    PipedInputStream IF;
-    PipedOutputStream IP;
-    private int tarace = -1;
+    PipedInputStream PFI;
+    PipedOutputStream PPO;
+    private List<Integer> tmp = new ArrayList<Integer>();
+        private List<Integer> tmp2 = new ArrayList<Integer>();
+    private char type;
     
-    ST()
+    ST(char type)
     {
-        IF = new PipedInputStream();
-        IP = new PipedOutputStream();
+        PFI = new PipedInputStream();
+        PPO = new PipedOutputStream();
+        this.type = type;
     }
     
-   /* public void initPipe(PipedOutputStream po)
+    public static void Read(List<Integer> t,PipedInputStream p)
     {
-        IF
-    }*/
+        try {
+            int size=p.read();
+
+            int r = -1;
+            for(int i =0;i<size;i++)
+            {               
+                r=p.read();
+                 t.add(r);    
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
+    public static void Write(List<Integer> t,PipedOutputStream p)
+    {
+        try {
+            p.write(t.size());
+                        
+            for(int i=0; i< t.size();i++)
+            {
+                p.write(t.get(i));  
+            }
+        } catch (IOException ex) {
+                Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+        
     @Override
     public void run()
     {
-        try {
-            tarace = IF.read();
-        } catch (IOException ex) {
-            Logger.getLogger(ST.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        for(int i = 0;i<10;i++)
-            tarace +=1;
-        try {
-            IP.write(tarace);
-            IP.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ST.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
+            Read(tmp,PFI);
+            Read(tmp2,PFI);
+            Write(tmp,PPO);
+            Write(tmp2,PPO);
+            System.out.println(type+" "+tmp);
+            System.out.println(type+" "+tmp2);
+    }    
 }
