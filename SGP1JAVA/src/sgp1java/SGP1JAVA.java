@@ -29,12 +29,7 @@ public class SGP1JAVA {
     static final int MIN = 0;
     static final int MAX = 100;
 
-    public static void Separator(List<Integer> tab,List<Integer> tabS,List<Integer> tabT)
-    {
-        int size = tab.size()/2+tab.size()%2;
-        tabS.addAll(tab.subList(0,size));
-        tabT.addAll(tab.subList(size,tab.size()));
-    }
+
     
     public static int Aleatoire()
     {
@@ -52,10 +47,10 @@ public class SGP1JAVA {
                 
         List<Integer> S = new ArrayList();
         List<Integer> T= new ArrayList();
-        Separator(tab,S,T);
+        ST.Separator(tab,S,T);
         System.out.println(tab.toString());
-        ST PS = new ST('S');
-        ST PT = new ST('T');
+        ST PS = new ST('S',"S");
+        ST PT = new ST('T',"T");
         PipedInputStream res=new PipedInputStream();
         PipedOutputStream val=new PipedOutputStream();
         List<Integer> tmp= new ArrayList();
@@ -78,7 +73,7 @@ public class SGP1JAVA {
             ST.Read(tmp, res);
             ST.Read(tmp2, res2);
             tmp.addAll(tmp2);
-            System.out.println(tmp);
+            System.out.println("Fin : "+tmp);
         } catch (IOException ex) {
             Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
