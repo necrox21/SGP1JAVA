@@ -31,56 +31,112 @@ public class SGP1JAVA {
 
 
     
-    public static int Aleatoire()
+    public static int Aleatoire()//Fonction generation int aleatoire
     {
         return ((int)(Math.random()*(MAX-MIN+1) + MIN));
     }
     
-    public static void main(String[] args){
-
-        List<Integer> tab = new <Integer>ArrayList();
-        //tab.addAll(Arrays.asList(3,2,5,1,9,4,7,6,8,0));
-        for(int i = 0 ;i<TailleT;i++)
-        {
-            tab.add(Aleatoire());tab.add(Aleatoire());
-        }
-                
-        List<Integer> S = new ArrayList();
-        List<Integer> T= new ArrayList();
-        ST.Separator(tab,S,T);
-        System.out.println(tab.toString());
-        ST PS = new ST('S',"S");
-        ST PT = new ST('T',"T");
-        PipedInputStream res=new PipedInputStream();
-        PipedOutputStream val=new PipedOutputStream();
-        List<Integer> tmp= new ArrayList();
-        List<Integer> tmp2= new ArrayList();
-        PipedInputStream res2=new PipedInputStream();
-        PipedOutputStream val2=new PipedOutputStream();
+    public static void TriST(List<Integer> tab)//Tri Parallele ST
+    {
+        System.out.println("=====Debut TriST=====");
+        List<Integer> S = new ArrayList<Integer>();
+        List<Integer> T= new ArrayList<Integer>();
+        ST.Separator(tab,S,T);//Separation du tableau en sous listes S et T
+        System.out.println("Tableau : "+tab.toString()+"\n");
+        ST PS = new ST('S',"S");//Creation fils S
+        ST PT = new ST('T',"T");//Creation fils T
+        /*Creation Pipe Communication avec le Pere*/
+        PipedInputStream resS=new PipedInputStream();
+        PipedOutputStream valS=new PipedOutputStream();
+        PipedInputStream resT=new PipedInputStream();
+        PipedOutputStream valT=new PipedOutputStream();
+        List<Integer> tmp= new ArrayList<Integer>();
         try {
-            val.connect(PS.PFI);
-            res.connect(PS.PPO);
-            val2.connect(PT.PFI);
-            res2.connect(PT.PPO);
+            /*Initialisation Connexion*/
+            valS.connect(PS.PFI);
+            resS.connect(PS.PFO);
+            valT.connect(PT.PFI);
+            resT.connect(PT.PFO);
             PS.Ecriture.connect(PT.Lecture);
             PT.Ecriture.connect(PS.Lecture);
-            ST.Write(S,val);
-            ST.Write(T,val2);
+            /*Envoi Des tableaux S et T au Fils*/
+            ST.Write(S,valS);
+            ST.Write(T,valT);
+            /*Demarrage des fils*/
             PS.start();
             PT.start();
             PS.join();
             PT.join();
-            ST.Read(tmp, res);
-            ST.Read(tmp2, res2);
-            tmp.addAll(tmp2);
+            /*Recuperation des resultats des fils*/
+            ST.Read(S, resS);
+            ST.Read(T, resT);
+            tmp.addAll(S);
+            tmp.addAll(T);
+            System.out.println("Fin : "+tmp);
+        } catch (IOException ex){
+            Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("=====Fin TriST=====\n");
+    }
+    
+    public static void Partition(List<Integer> tab)//Partition ST
+    {
+        System.out.println("=====Debut Partition=====");
+        List<Integer> S = new ArrayList<Integer>();
+        List<Integer> T= new ArrayList<Integer>();
+        ST.Separator(tab,S,T);//Separation du tableau en sous listes S et T
+        System.out.println("Tableau : "+tab.toString()+"\n");
+        ST PS = new ST('S',"-1");//Creation fils S
+        ST PT = new ST('T',"-1");//Creation fils T
+        /*Creation Pipe Communication avec le Pere*/
+        PipedInputStream res=new PipedInputStream();
+        PipedOutputStream val=new PipedOutputStream();
+        PipedInputStream res2=new PipedInputStream();
+        PipedOutputStream val2=new PipedOutputStream();
+        List<Integer> tmp= new ArrayList<Integer>();
+        try {
+            /*Initialisation Connexion*/
+            val.connect(PS.PFI);
+            res.connect(PS.PFO);
+            val2.connect(PT.PFI);
+            res2.connect(PT.PFO);
+            PS.Ecriture.connect(PT.Lecture);
+            PT.Ecriture.connect(PS.Lecture);
+            /*Envoi Des tableaux S et T au Fils*/
+            ST.Write(S,val);
+            ST.Write(T,val2);
+            /*Demarrage des fils*/
+            PS.start();
+            PT.start();
+            PS.join();
+            PT.join();
+            /*Recuperation des resultats des fils*/
+            ST.Read(S, res);
+            ST.Read(T, res2);
+            tmp.addAll(S);
+            tmp.addAll(T);
             System.out.println("Fin : "+tmp);
         } catch (IOException ex) {
             Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(SGP1JAVA.class.getName()).log(Level.SEVERE, null, ex);
         }
-      
-        
+        System.out.println("=====Fin Partition=====\n");
+    }
+    
+    public static void main(String[] args){
+        /*Remplisage du tableau*/
+        List<Integer> tab = new ArrayList<Integer>();
+        for(int i = 0 ;i<TailleT;i++)
+        {
+            tab.add(Aleatoire());tab.add(Aleatoire());
+        }
+         
+        Partition(tab);
+        TriST(tab);
+
     }
     
 }
